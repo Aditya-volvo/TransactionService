@@ -24,13 +24,13 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type")
-    private TransactionType transcationType;
+    private TransactionType transactionType;
 
     @Column(name = "transaction_date")
     private LocalDateTime dateTime;
 
     @Column(name = "tran_quantity")
-    private int quantity;
+    private Long quantity;
 //FK linking
     private Long medicineId;
     private Long pharmacyId;
