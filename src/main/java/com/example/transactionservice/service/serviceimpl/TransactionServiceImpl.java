@@ -34,4 +34,30 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transaction> transactions = transactionRepository.findAll();
         return transactions.stream().map(globalMapper::mapRepositoryToResponse).toList();
     }
+
+    @Override
+    public ResponseEntity<TransactionResponse> getTransactionById(long transactionId) {
+        Transaction transaction = transactionRepository.findById(transactionId).orElseThrow();
+        return globalResponseEntity.mapEntityToRsponseDto(transaction);
+    }
+
+    @Override
+    public ResponseEntity<TransactionResponse> updateTransactionById(long transactionId,TransactionRequest transactionRequest) {
+        Transaction transaction = transactionRepository.findById(transactionId).orElseThrow();
+        transaction.setTransactionType(transactionRequest.getTransactionType());
+        transaction.setQuantity(transactionRequest.getQuantity());
+        transaction.setDateTime(transactionRequest.getDateTime());
+        transaction.setPharmacyId(transactionRequest.getPharmacyId());
+        transaction.setMedicineId(transactionRequest.getMedicineId());
+        transaction.setPatientId(transactionRequest.getPatientId());
+        Transaction saved = transactionRepository.save(transaction);
+        return globalResponseEntity.mapEntityToRsponseDto(saved);
+    }
+
+    @Override
+    public String deleteTransactionById(Long transactionId) {
+        Transaction transaction = transactionRepository.findById(transactionId).orElseThrow();
+        transactionRepository.delete(transaction);
+        return "Transaction with Id :"+transaction.getTransactionId()+"was Deleted";
+    }
 }

@@ -11,4 +11,10 @@ public interface TransactionService {
     ResponseEntity<TransactionResponse> generateTransaction(@Valid TransactionRequest transactionRequest);
 
     List<TransactionResponse> getListOfTransaction();
+
+    ResponseEntity<TransactionResponse> getTransactionById(long transactionId);
+
+    ResponseEntity<TransactionResponse> updateTransactionById(long transactionId,TransactionRequest transactionRequest);
+
+    String deleteTransactionById(Long transactionId);
 }
