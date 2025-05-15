@@ -2,6 +2,7 @@ package com.example.transactionservice.service.serviceimpl;
 
 import com.example.transactionservice.dto.TransactionRequest;
 import com.example.transactionservice.dto.TransactionResponse;
+import com.example.transactionservice.exception.ResourceNotFoundException;
 import com.example.transactionservice.mapper.GlobalMapper;
 import com.example.transactionservice.model.Transaction;
 import com.example.transactionservice.repository.TransactionRepository;
@@ -37,13 +38,15 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public ResponseEntity<TransactionResponse> getTransactionById(long transactionId) {
-        Transaction transaction = transactionRepository.findById(transactionId).orElseThrow();
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(()->new ResourceNotFoundException("The Transaction with Id :"+transactionId+"not found"));
         return globalResponseEntity.mapEntityToRsponseDto(transaction);
     }
 
     @Override
     public ResponseEntity<TransactionResponse> updateTransactionById(long transactionId,TransactionRequest transactionRequest) {
-        Transaction transaction = transactionRepository.findById(transactionId).orElseThrow();
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(()->new ResourceNotFoundException("The Transaction with Id :"+transactionId+"not found"));
         transaction.setTransactionType(transactionRequest.getTransactionType());
         transaction.setQuantity(transactionRequest.getQuantity());
         transaction.setDateTime(transactionRequest.getDateTime());
@@ -56,7 +59,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public String deleteTransactionById(Long transactionId) {
-        Transaction transaction = transactionRepository.findById(transactionId).orElseThrow();
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(()->new ResourceNotFoundException("The Transaction with Id :"+transactionId+"not found"));
         transactionRepository.delete(transaction);
         return "Transaction with Id :"+transaction.getTransactionId()+"was Deleted";
     }
