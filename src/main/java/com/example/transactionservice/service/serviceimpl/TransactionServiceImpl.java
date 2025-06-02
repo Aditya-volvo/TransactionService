@@ -1,5 +1,6 @@
 package com.example.transactionservice.service.serviceimpl;
 
+import com.example.transactionservice.client.MedicineServiceClient;
 import com.example.transactionservice.client.PharmacyServiceClient;
 import com.example.transactionservice.dto.PharmacyResponseDto;
 import com.example.transactionservice.dto.TransactionRequest;
@@ -24,9 +25,12 @@ public class TransactionServiceImpl implements TransactionService, PharmacyServi
     private final GlobalMapper globalMapper;
     private final GlobalResponseEntity globalResponseEntity;
     private final PharmacyServiceClient pharmacyServiceClient;
+    private final MedicineServiceClient medicineServiceClient;
 
     @Override
     public ResponseEntity<TransactionResponse> generateTransaction(TransactionRequest transactionRequest) {
+        // Validate if the medicine exists
+        medicineServiceClient.getMedicineById(transactionRequest.getMedicineId());
         Transaction transaction = globalMapper.mapRequestToEntity(transactionRequest);
         Transaction saved = transactionRepository.save(transaction);
         return globalResponseEntity.mapEntityToRsponseDto(saved);
