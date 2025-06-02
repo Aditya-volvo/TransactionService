@@ -1,5 +1,7 @@
 package com.example.transactionservice.service.serviceimpl;
 
+import com.example.transactionservice.client.PharmacyServiceClient;
+import com.example.transactionservice.dto.PharmacyResponseDto;
 import com.example.transactionservice.dto.TransactionRequest;
 import com.example.transactionservice.dto.TransactionResponse;
 import com.example.transactionservice.exception.ResourceNotFoundException;
@@ -16,12 +18,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TransactionServiceImpl implements TransactionService {
+public class TransactionServiceImpl implements TransactionService, PharmacyServiceClient {
 
     private final TransactionRepository transactionRepository;
     private final GlobalMapper globalMapper;
     private final GlobalResponseEntity globalResponseEntity;
-
+    private final PharmacyServiceClient pharmacyServiceClient;
 
     @Override
     public ResponseEntity<TransactionResponse> generateTransaction(TransactionRequest transactionRequest) {
@@ -63,5 +65,13 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(()->new ResourceNotFoundException("The Transaction with Id :"+transactionId+"not found"));
         transactionRepository.delete(transaction);
         return "Transaction with Id :"+transaction.getTransactionId()+"was Deleted";
+    }
+
+    @Override
+    public PharmacyResponseDto getPharmacyByTransactionId(Long transactionId) {
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction with ID: " + transactionId + " not found"));
+        return pharmacyServiceClient.getPharmacyByTransactionId(transaction.getPharmacyId());
+
     }
 }

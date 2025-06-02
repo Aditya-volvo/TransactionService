@@ -32,6 +32,8 @@ public class TransactionController {
         return transactionService.getTransactionById(transactionId);
     }
 
+    
+
     @PutMapping("/{transactionId}")
     public ResponseEntity<TransactionResponse> updateTransactionById(@PathVariable long transactionId, @Valid @RequestBody TransactionRequest transactionRequest){
         return transactionService.updateTransactionById(transactionId,transactionRequest);
